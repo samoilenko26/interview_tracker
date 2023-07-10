@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: interview_tracker:${INTERVIEW_TRACKER_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      INTERVIEW_TRACKER_HOST: 0.0.0.0
+      INTERVIEW_TRACKER_DB_HOST: interview_tracker-db
+      INTERVIEW_TRACKER_DB_PORT: 5432
+      INTERVIEW_TRACKER_DB_USER: interview_tracker
+      INTERVIEW_TRACKER_DB_PASS: interview_tracker
+      INTERVIEW_TRACKER_DB_BASE: interview_tracker
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: interview_tracker-db
+    environment:
+      POSTGRES_PASSWORD: "interview_tracker"
+      POSTGRES_USER: "interview_tracker"
+      POSTGRES_DB: "interview_tracker"
+    volumes:
+    - interview_tracker-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U interview_tracker
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+
+
+volumes:
+  interview_tracker-db-data:
+    name: interview_tracker-db-data
