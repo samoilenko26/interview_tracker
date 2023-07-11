@@ -34,13 +34,17 @@ class User(Base):
     email = Column(String)
     role = Column(Enum(UserRoleEnum))  # type: ignore
 
+    applications = relationship("Application", backref="user")
+    contacts = relationship("Contact", backref="user")
+    timelines = relationship("Timeline", backref="user")
+    attachments = relationship("Attachment", backref="user")
+
 
 class Application(Base):
     __tablename__ = "applications"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", backref="applications")
     company_name = Column(String)
     official_website = Column(String)
     icon = Column(String)
@@ -53,8 +57,11 @@ class Application(Base):
     location = Column(String)
     on_site_remote = Column(Enum(OnSiteRemoteEnum))  # type: ignore
     notes = Column(Text)
-    contacts = relationship("Contact", backref="application")
     archived = Column(Boolean)
+
+    contacts = relationship("Contact", backref="application")
+    timelines = relationship("Timeline", backref="application")
+    attachments = relationship("Attachment", backref="application")
 
 
 class Contact(Base):
@@ -62,9 +69,7 @@ class Contact(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", backref="contacts")
     application_id = Column(Integer, ForeignKey("applications.id"))
-    application = relationship("Application", backref="contacts")
     name = Column(String)
     contact = Column(String)
 
@@ -74,9 +79,7 @@ class Timeline(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", backref="timelines")
     application_id = Column(Integer, ForeignKey("applications.id"))
-    application = relationship("Application", backref="timelines")
     name = Column(String)
     value = Column(String)
 
@@ -86,8 +89,6 @@ class Attachment(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", backref="attachments")
     application_id = Column(Integer, ForeignKey("applications.id"))
-    application = relationship("Application", backref="attachments")
     name = Column(String)
     link = Column(String)

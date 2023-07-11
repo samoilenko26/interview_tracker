@@ -10,7 +10,7 @@ async def send_echo_message(
     incoming_message: Message,
 ) -> Message:
     """
-    Sends echo back to user.
+    Sends echo back to users.
 
     :param incoming_message: incoming message.
     :returns: message same as the incoming.
