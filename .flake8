@@ -71,6 +71,11 @@ ignore =
   ; Found too many empty lines in `def`
   WPS473,
 
+
+
+  ; Missing docstring in public class
+  D101,
+
 per-file-ignores =
   ; all tests
   test_*.py,tests.py,tests_*.py,*/tests/*,conftest.py:
