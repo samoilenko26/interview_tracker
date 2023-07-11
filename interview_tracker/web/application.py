@@ -3,7 +3,7 @@ from importlib import metadata
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
 
-from interview_tracker.logging import configure_logging
+from interview_tracker.logger import configure_logging
 from interview_tracker.web.api.router import api_router
 from interview_tracker.web.lifetime import (
     register_shutdown_event,

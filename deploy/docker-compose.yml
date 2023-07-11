@@ -20,6 +20,8 @@ services:
       INTERVIEW_TRACKER_DB_USER: interview_tracker
       INTERVIEW_TRACKER_DB_PASS: interview_tracker
       INTERVIEW_TRACKER_DB_BASE: interview_tracker
+    ports:
+    - 8000:8000
 
   db:
     image: postgres:13.8-bullseye
@@ -36,8 +38,6 @@ services:
       interval: 2s
       timeout: 3s
       retries: 40
-
-
 
 volumes:
   interview_tracker-db-data:
