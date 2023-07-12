@@ -1,5 +1,3 @@
-from typing import AsyncGenerator
-
 import pytest
 from fastapi import FastAPI, status
 from httpx import AsyncClient
@@ -12,7 +10,7 @@ from interview_tracker.db.models.main_model import User
 @pytest.mark.anyio
 async def test_create_okay(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
@@ -32,30 +30,28 @@ async def test_create_okay(
     # Assert response status code
     assert response.status_code == status.HTTP_201_CREATED
     query = select(User).where(User.email == user_email)
-    result = await dbsession.execute(query)  # type: ignore
+    result = await dbsession.execute(query)
     assert result.scalar_one_or_none() is not None
 
 
 @pytest.mark.anyio
 async def test_create_user_with_the_same_email(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
     # Init database
-    user_id = 1
     user_name = "Anton Maximov"
     user_email = "anton@maximov.com"
     user_role = "user"
     mock_user = User(
-        id=user_id,
         name=user_name,
         email=user_email,
         role=user_role,
     )
-    dbsession.add(mock_user)  # type: ignore
-    await dbsession.commit()  # type: ignore
+    dbsession.add(mock_user)
+    await dbsession.commit()
 
     # Execute request
     data = {
@@ -78,7 +74,7 @@ async def test_create_user_with_the_same_email(
 @pytest.mark.anyio
 async def test_create_incorrect_name_first_letter(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
@@ -102,7 +98,7 @@ async def test_create_incorrect_name_first_letter(
 @pytest.mark.anyio
 async def test_create_incorrect_name_len(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
@@ -126,7 +122,7 @@ async def test_create_incorrect_name_len(
 @pytest.mark.anyio
 async def test_create_incorrect_role(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
     user_name = "Anton Maximov"
@@ -149,7 +145,7 @@ async def test_create_incorrect_role(
 @pytest.mark.anyio
 async def test_create_incorrect_email(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
@@ -173,7 +169,7 @@ async def test_create_incorrect_email(
 @pytest.mark.anyio
 async def test_create_corrector_name(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
@@ -190,16 +186,16 @@ async def test_create_corrector_name(
     url = fastapi_app.url_path_for("create_user")
     await client.post(url=url, json=data)
     query = select(User).where(User.email == user_email)
-    result = await dbsession.execute(query)  # type: ignore
+    result = await dbsession.execute(query)
     user_object = result.scalar_one_or_none()
 
-    assert user_object.name == "Anton Maximov"
+    assert user_object is not None and user_object.name == "Anton Maximov"
 
 
 @pytest.mark.anyio
 async def test_create_corrector_email(
     client: AsyncClient,
-    dbsession: AsyncGenerator[AsyncSession, None],
+    dbsession: AsyncSession,
     fastapi_app: FastAPI,
 ) -> None:
 
@@ -216,6 +212,6 @@ async def test_create_corrector_email(
     url = fastapi_app.url_path_for("create_user")
     await client.post(url=url, json=data)
     query = select(User).where(User.name == user_name)
-    result = await dbsession.execute(query)  # type: ignore
+    result = await dbsession.execute(query)
     user_object = result.scalar_one_or_none()
-    assert user_object.email == "anton@maximov.com"
+    assert user_object is not None and user_object.email == "anton@maximov.com"
