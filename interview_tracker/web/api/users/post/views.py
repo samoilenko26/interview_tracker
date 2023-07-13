@@ -1,20 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from typing import Annotated, Optional, Union
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Header
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from interview_tracker.db.dependencies import get_db_session
 from interview_tracker.db.models.main_model import User
 from interview_tracker.web.api.users.schemas.base import Message
+from interview_tracker.web.auth.dependencies import validate_token
 
 router = APIRouter()
 
 
-@router.post("/", response_model=Message)
+@router.post("/", dependencies=[Depends(validate_token)])
 async def create_user(  # noqa: WPS210
     incoming_message: Message,
+
     db: AsyncSession = Depends(get_db_session),
 ) -> Response:
-
     im_name = incoming_message.name.strip().lower().title()
     im_email = incoming_message.email.strip().lower()
     im_role = incoming_message.role

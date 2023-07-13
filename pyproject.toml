@@ -21,6 +21,9 @@ SQLAlchemy = {version = "^2.0.0", extras = ["asyncio"]}
 asyncpg = {version = "^0.27.0", extras = ["sa"]}
 httptools = "^0.5.0"
 loguru = "^0.6.0"
+pyjwt = "2.4.0"
+secure = "0.3.0"
+cryptography = "41.0.0"
 
 
 [tool.poetry.dev-dependencies]
