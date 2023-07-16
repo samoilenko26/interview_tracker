@@ -1,17 +1,26 @@
+from typing import Any, Dict
+
 from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from interview_tracker.db.dependencies import get_db_session
 from interview_tracker.db.models.main_model import User
 from interview_tracker.web.api.users.schemas.base import Message
+from interview_tracker.web.auth.dependencies import validate_token
 
+auth_scheme = HTTPBearer()
 router = APIRouter()
 
 
-@router.post("/", response_model=Message)
+@router.post("/")
 async def create_user(  # noqa: WPS210
     incoming_message: Message,
+    auth_header: HTTPAuthorizationCredentials = Depends(
+        auth_scheme,
+    ),  # for FastApi docs
+    token: Dict[str, Any] = Depends(validate_token),  # THE validation of token
     db: AsyncSession = Depends(get_db_session),
 ) -> Response:
 

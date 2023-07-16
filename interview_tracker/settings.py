@@ -2,7 +2,7 @@ import enum
 from pathlib import Path
 from tempfile import gettempdir
 
-from pydantic import BaseSettings
+from pydantic import BaseSettings, validator
 from yarl import URL
 
 TEMP_DIR = Path(gettempdir())
@@ -38,6 +38,17 @@ class Settings(BaseSettings):
     environment: str = "dev"
 
     log_level: LogLevel = LogLevel.INFO
+
+    auth0_audience: str = ""
+    auth0_domain: str = ""
+    client_origin_url: str = ""
+
+    @classmethod
+    @validator("client_origin_url", "auth0_audience", "auth0_domain")
+    def check_not_empty(cls, variable: str) -> str:
+        if variable == "":
+            raise ValueError(f"{variable} is not defined")
+        return variable
 
     # Variables for the database
     db_host: str = "localhost"

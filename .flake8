@@ -75,6 +75,9 @@ ignore =
 
   ; Missing docstring in public class
   D101,
+  ; Missing docstring in public method
+  D102,
+
   ; Missing docstring in public function
   D103,
   ; First line should end with a period
