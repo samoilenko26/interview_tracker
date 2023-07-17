@@ -6,11 +6,6 @@ from sqlalchemy.orm import relationship
 from interview_tracker.db.base import Base
 
 
-class UserRoleEnum(str, PythonEnum):  # noqa: WPS600
-    user = "user"
-    admin = "admin"
-
-
 class OnSiteRemoteEnum(str, PythonEnum):  # noqa: WPS600
     remote = "remote"
     onsite = "onsite"
@@ -24,20 +19,6 @@ class StatusCategoryEnum(str, PythonEnum):  # noqa: WPS600
     yellow = "yellow"
     orange = "orange"
     purple = "purple"
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    email = Column(String)
-    role = Column(Enum(UserRoleEnum))  # type: ignore
-
-    applications = relationship("Application", backref="user")
-    contacts = relationship("Contact", backref="user")
-    timelines = relationship("Timeline", backref="user")
-    attachments = relationship("Attachment", backref="user")
 
 
 class Application(Base):

@@ -2,7 +2,7 @@ from typing import NamedTuple
 
 from starlette.requests import Request as StarletteRequest
 
-from interview_tracker.web.auth.custom_exceptions import (
+from interview_tracker.web.authorization.custom_exceptions import (
     BadCredentialsException,
     RequiresAuthenticationException,
 )
