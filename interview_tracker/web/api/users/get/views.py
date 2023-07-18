@@ -12,10 +12,10 @@ router = APIRouter()
 
 
 @router.get("/")
-async def echo_user(  # noqa: WPS210
+async def create_user(  # noqa: WPS210
     token: HTTPAuthorizationCredentials = Depends(auth_scheme),
     jwt_token: JsonWebToken = Depends(authorization),
     session: AsyncSession = Depends(get_db_session),
 ) -> Response:
-    user = await get_user_by_sub(session, jwt_token.subject)  # noqa: F841
-    return Response(status_code=status.HTTP_200_OK)
+    await get_user_by_sub(session, jwt_token.subject)
+    return Response(status_code=status.HTTP_201_CREATED)

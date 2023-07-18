@@ -28,6 +28,7 @@ class Application(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     company_name = Column(String)
     official_website = Column(String)
+    apply_icon = Column(Boolean)
     icon = Column(String)
     job_title = Column(String)
     job_description_link = Column(String)

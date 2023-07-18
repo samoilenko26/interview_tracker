@@ -1,0 +1,1 @@
+"""POST applications API"""
