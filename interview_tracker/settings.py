@@ -43,6 +43,10 @@ class Settings(BaseSettings):
     auth0_domain: str = ""
     client_origin_url: str = ""
 
+    # for testing
+    client_id: str = ""
+    client_secret: str = ""
+
     @classmethod
     @validator("client_origin_url", "auth0_audience", "auth0_domain")
     def check_not_empty(cls, variable: str) -> str:

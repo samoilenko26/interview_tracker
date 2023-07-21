@@ -23,6 +23,7 @@ httptools = "^0.5.0"
 loguru = "^0.6.0"
 auth0-python = "^4.3.0"
 cryptography = "^41.0.2"
+types-requests = "^2.31.0.2"
 
 
 [tool.poetry.dev-dependencies]

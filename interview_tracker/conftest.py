@@ -11,8 +11,13 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from interview_tracker.db.dependencies import get_db_session
+from interview_tracker.db.models.application import OnSiteRemoteEnum, StatusCategoryEnum
 from interview_tracker.db.utils import create_database, drop_database
 from interview_tracker.settings import settings
+from interview_tracker.web.api.applications.schemas.application import (
+    ApplicationCreateMessage,
+    TimelineBase,
+)
 from interview_tracker.web.application import get_app
 
 
@@ -108,3 +113,25 @@ async def client(
     """
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture
+def application_request_body() -> ApplicationCreateMessage:
+    return ApplicationCreateMessage(
+        company_name="Test Company",
+        job_title="Test Job",
+        status="Pending",
+        attractiveness_scale=5,
+        status_category=StatusCategoryEnum.red,
+        official_website="https://example.com",
+        apply_icon=True,
+        job_description_link="https://example.com/job_description",
+        salary="100,000 EUR",
+        location="Test City",
+        on_site_remote=OnSiteRemoteEnum.remote,
+        timelines=[
+            TimelineBase(name="Interview 1", value="2023-07-21"),
+            TimelineBase(name="Interview 2", value="2023-07-25"),
+        ],
+        notes="Test notes",
+    )
