@@ -7,7 +7,12 @@ api_router.include_router(monitoring.router)
 api_router.include_router(echo.router, prefix="/echo", tags=["echo"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(
-    applications.router,
+    applications.post,
+    prefix="/applications",
+    tags=["applications"],
+)
+api_router.include_router(
+    applications.get,
     prefix="/applications",
     tags=["applications"],
 )

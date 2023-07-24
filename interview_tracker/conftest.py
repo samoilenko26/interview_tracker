@@ -120,6 +120,7 @@ def application_request_body() -> Dict[str, Any]:
         "status_category": "red",
         "official_website": "https://example.com",
         "apply_icon": True,
+        "icon": "https://example.com/icon.ico",
         "job_description_link": "https://example.com/job_description",
         "salary": "100,000",
         "location": "Test City",

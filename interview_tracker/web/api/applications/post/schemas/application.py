@@ -3,14 +3,14 @@ from typing import List, Optional
 from pydantic import BaseModel, validator
 from pydantic.class_validators import partial
 
-from interview_tracker.db.models.application import OnSiteRemoteEnum, StatusCategoryEnum
-from interview_tracker.web.api.applications.schemas.validators import (
+from interview_tracker.db.models.main_model import OnSiteRemoteEnum, StatusCategoryEnum
+from interview_tracker.web.api.applications.post.schemas.validators import (
     validate_attractiveness_scale,
     validate_length,
 )
 
 
-class TimelineBase(BaseModel):
+class Timeline(BaseModel):
     name: str
     value: str
 
@@ -19,7 +19,7 @@ class TimelineBase(BaseModel):
     )
 
 
-class ApplicationCreateMessage(BaseModel):
+class ApplicationPostMessage(BaseModel):
     company_name: str
     job_title: str
     status: str
@@ -27,17 +27,19 @@ class ApplicationCreateMessage(BaseModel):
     status_category: StatusCategoryEnum
     official_website: Optional[str]
     apply_icon: Optional[bool] = False
+    icon: Optional[str]
     job_description_link: Optional[str]
     salary: Optional[str]
     location: Optional[str]
     on_site_remote: Optional[OnSiteRemoteEnum]
-    timelines: Optional[List[TimelineBase]]
+    timelines: Optional[List[Timeline]]
     notes: Optional[str]
 
     _validate_length = validator(
         "company_name",
         "job_title",
         "status",
+        "icon",
         "official_website",
         "job_description_link",
         "salary",

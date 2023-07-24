@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from interview_tracker.db.models.user import User
+from interview_tracker.db.models.main_model import User
 
 
 async def _create_new_user(session: AsyncSession, sub: str) -> User:

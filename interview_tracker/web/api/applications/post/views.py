@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from interview_tracker.db.controllers.application import save_application, save_timeline
 from interview_tracker.db.controllers.user import get_user_by_sub
 from interview_tracker.db.dependencies import get_db_session
-from interview_tracker.db.models.application import Application, Timeline
-from interview_tracker.web.api.applications.schemas.application import (
-    ApplicationCreateMessage,
+from interview_tracker.db.models.main_model import Application, Timeline
+from interview_tracker.web.api.applications.post.schemas.application import (
+    ApplicationPostMessage,
 )
 from interview_tracker.web.authorization.dependencies import authorization
 from interview_tracker.web.authorization.json_web_token import JsonWebToken
@@ -18,7 +18,7 @@ router = APIRouter()
 
 @router.post("/")
 async def create_application(  # noqa: WPS210
-    incoming_message: ApplicationCreateMessage,
+    incoming_message: ApplicationPostMessage,
     token: HTTPAuthorizationCredentials = Depends(auth_scheme),
     jwt_token: JsonWebToken = Depends(authorization),
     session: AsyncSession = Depends(get_db_session),
@@ -33,17 +33,13 @@ async def create_application(  # noqa: WPS210
     )
 
     timelines_data = incoming_message.dict().pop("timelines", [])
-    timelines = []
-    for timeline_data in timelines_data:
-        timeline = Timeline(
-            user_id=user.id,
-            application_id=application.id,
-            **timeline_data,
-        )
-        timeline = await save_timeline(
-            session=session,
-            timeline=timeline,
-        )
-        timelines.append(timeline)
+    if timelines_data:
+        for timeline_data in timelines_data:
+            timeline = Timeline(
+                user_id=user.id,
+                application_id=application.id,
+                **timeline_data,
+            )
+            await save_timeline(session=session, timeline=timeline)
 
     return Response(status_code=status.HTTP_201_CREATED)

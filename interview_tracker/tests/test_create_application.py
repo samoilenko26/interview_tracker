@@ -7,7 +7,7 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from interview_tracker.db.models.application import Application, Timeline
+from interview_tracker.db.models.main_model import Application, Timeline
 from interview_tracker.web.authorization.testing import get_user_token_headers
 
 
@@ -58,6 +58,7 @@ async def test_create_application_okay(  # noqa: WPS218
         created_application.job_description_link
         == application_request_body["job_description_link"]
     )
+    assert created_application.icon == application_request_body["icon"]
     assert created_application.salary == application_request_body["salary"]
     assert created_application.location == application_request_body["location"]
     assert (
