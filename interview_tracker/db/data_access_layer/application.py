@@ -1,7 +1,8 @@
-from typing import Sequence
+from typing import Optional, Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from interview_tracker.db.models.main_model import Application, Timeline
 
@@ -28,11 +29,24 @@ async def save_timeline(
     return timeline
 
 
-async def get_application_by_user_id(
+async def get_all_applications_by_user_id(
     user_id: int,
     session: AsyncSession,
 ) -> Sequence[Application]:
-    query = select(Application).filter_by(user_id=user_id)
+    query = select(Application).filter(Application.user_id == user_id)
+    result = await session.execute(query)
+    return result.scalars().all()
+
+
+async def get_application_by_application_id(
+    application_id: int,
+    session: AsyncSession,
+) -> Optional[Application]:
+    query = (
+        select(Application)
+        .options(selectinload(Application.timelines))
+        .filter(Application.id == application_id)
+    )
     result = await session.execute(query)
 
-    return result.unique().scalars().all()
+    return result.unique().scalars().first()

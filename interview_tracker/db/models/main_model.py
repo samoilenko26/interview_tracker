@@ -1,5 +1,5 @@
 from enum import Enum as PythonEnum
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -39,27 +39,29 @@ class Application(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
     company_name: Mapped[str] = mapped_column(String)
-    official_website: Mapped[str] = mapped_column(String)
-    apply_icon: Mapped[str] = mapped_column(Boolean)
-    icon: Mapped[str] = mapped_column(String)
     job_title: Mapped[str] = mapped_column(String)
-    job_description_link: Mapped[str] = mapped_column(String)
-    attractiveness_scale: Mapped[int] = mapped_column(Integer)
     status: Mapped[str] = mapped_column(String)
+    attractiveness_scale: Mapped[int] = mapped_column(Integer)
     status_category: Mapped[StatusCategoryEnum] = mapped_column(
         Enum(StatusCategoryEnum),
     )
-    salary: Mapped[str] = mapped_column(String)
-    location: Mapped[str] = mapped_column(String)
-    on_site_remote: Mapped[OnSiteRemoteEnum] = mapped_column(Enum(OnSiteRemoteEnum))
-    notes: Mapped[str] = mapped_column(Text)
+    official_website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    apply_icon: Mapped[str] = mapped_column(Boolean, nullable=True)
+    icon: Mapped[str] = mapped_column(String, nullable=True)
+    job_description_link: Mapped[str] = mapped_column(String, nullable=True)
+    salary: Mapped[str] = mapped_column(String, nullable=True)
+    location: Mapped[str] = mapped_column(String, nullable=True)
+    on_site_remote: Mapped[OnSiteRemoteEnum] = mapped_column(
+        Enum(OnSiteRemoteEnum),
+        nullable=True,
+    )
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
     archived: Mapped[bool] = mapped_column(Boolean)
 
     user: Mapped["User"] = relationship("User", back_populates="applications")
     timelines: Mapped[List["Timeline"]] = relationship(
         "Timeline",
         back_populates="application",
-        lazy="joined",
     )
 
 

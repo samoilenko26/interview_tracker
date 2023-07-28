@@ -26,7 +26,7 @@ class ApplicationPostMessage(BaseModel):
     attractiveness_scale: int
     status_category: StatusCategoryEnum
     official_website: Optional[str]
-    apply_icon: Optional[bool] = False
+    apply_icon: Optional[bool]
     icon: Optional[str]
     job_description_link: Optional[str]
     salary: Optional[str]

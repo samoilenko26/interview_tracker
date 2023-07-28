@@ -1,4 +1,4 @@
-from typing import Any, AsyncGenerator, Dict
+from typing import Any, AsyncGenerator, Awaitable, Callable, Dict, List, Optional
 
 import pytest
 from fastapi import FastAPI
@@ -10,10 +10,17 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from interview_tracker.db.data_access_layer.application import (
+    save_application,
+    save_timeline,
+)
+from interview_tracker.db.data_access_layer.user import get_user_by_sub
 from interview_tracker.db.dependencies import get_db_session
+from interview_tracker.db.models.main_model import Application, Timeline
 from interview_tracker.db.utils import create_database, drop_database
 from interview_tracker.settings import settings
 from interview_tracker.web.application import get_app
+from interview_tracker.web.authorization.testing import testing_users
 
 
 @pytest.fixture(scope="session")
@@ -137,3 +144,47 @@ def application_request_body() -> Dict[str, Any]:
         ],
         "notes": "Test notes",
     }
+
+
+@pytest.fixture
+async def mock_application(  # noqa: C901, WPS231
+    dbsession: AsyncSession,
+    application_request_body: Dict[str, Any],
+) -> Callable[..., Awaitable[None]]:
+    async def _mock_application(  # noqa: WPS430
+        exclude: Optional[List[str]] = None,
+        user_test_id: str = "user_1",
+        **kwargs: Any,
+    ) -> None:
+
+        if exclude:
+            for field in exclude:
+                if field in application_request_body:
+                    application_request_body.pop(field)
+        if kwargs:
+            application_request_body.update(kwargs)
+
+        # split in two distinct objects: application and timelines
+        timelines = application_request_body.pop("timelines")
+
+        user = await get_user_by_sub(dbsession, testing_users[user_test_id][2])
+        application = Application(
+            user_id=user.id,
+            archived=False,
+            **application_request_body,
+        )
+
+        # TODO not to use the methods
+        application = await save_application(
+            session=dbsession,
+            application=application,
+        )
+        for timeline_data in timelines:
+            timeline = Timeline(
+                user_id=user.id,
+                application_id=application.id,
+                **timeline_data,
+            )
+            await save_timeline(session=dbsession, timeline=timeline)
+
+    return _mock_application

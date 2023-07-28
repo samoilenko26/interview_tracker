@@ -36,7 +36,11 @@ class ApplicationsResponse(BaseModel):
     applications: List[ApplicationBase]
 
 
-def application_to_response(application: Application) -> ApplicationBase:
+class ApplicationResponse(BaseModel):
+    application: ApplicationBase
+
+
+def make_full_info_application(application: Application) -> ApplicationBase:
     timelines = [
         TimelineBase(id=timeline.id, name=timeline.name, value=timeline.value)
         for timeline in application.timelines
@@ -50,10 +54,22 @@ def application_to_response(application: Application) -> ApplicationBase:
         status_category=application.status_category,
         official_website=application.official_website,
         apply_icon=application.apply_icon,
+        icon=application.icon,
         job_description_link=application.job_description_link,
         salary=application.salary,
         location=application.location,
         on_site_remote=application.on_site_remote,
         notes=application.notes,
         timelines=timelines,
+    )
+
+
+def make_base_info_application(application: Application) -> ApplicationBase:
+    return ApplicationBase(
+        id=application.id,
+        company_name=application.company_name,
+        job_title=application.job_title,
+        status=application.status,
+        attractiveness_scale=application.attractiveness_scale,
+        status_category=application.status_category,
     )

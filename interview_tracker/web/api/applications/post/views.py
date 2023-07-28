@@ -2,8 +2,11 @@ from fastapi import APIRouter, Depends, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from interview_tracker.db.controllers.application import save_application, save_timeline
-from interview_tracker.db.controllers.user import get_user_by_sub
+from interview_tracker.db.data_access_layer.application import (
+    save_application,
+    save_timeline,
+)
+from interview_tracker.db.data_access_layer.user import get_user_by_sub
 from interview_tracker.db.dependencies import get_db_session
 from interview_tracker.db.models.main_model import Application, Timeline
 from interview_tracker.web.api.applications.post.schemas.application import (
