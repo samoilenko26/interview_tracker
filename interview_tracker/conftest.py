@@ -1,3 +1,4 @@
+import copy
 from typing import Any, AsyncGenerator, Awaitable, Callable, Dict, List, Optional
 
 import pytest
@@ -150,28 +151,32 @@ def application_request_body() -> Dict[str, Any]:
 async def mock_application(  # noqa: C901, WPS231
     dbsession: AsyncSession,
     application_request_body: Dict[str, Any],
-) -> Callable[..., Awaitable[None]]:
+) -> Callable[..., Awaitable[Application]]:
     async def _mock_application(  # noqa: WPS430
         exclude: Optional[List[str]] = None,
         user_test_id: str = "user_1",
         **kwargs: Any,
-    ) -> None:
+    ) -> Application:
+
+        # in order to not broke the application_request_body during the test
+        # it will allow us to call the mock_application twice in the same test
+        request_body = copy.deepcopy(application_request_body)
 
         if exclude:
             for field in exclude:
-                if field in application_request_body:
-                    application_request_body.pop(field)
+                if field in request_body:
+                    request_body.pop(field)
         if kwargs:
-            application_request_body.update(kwargs)
+            request_body.update(kwargs)
 
         # split in two distinct objects: application and timelines
-        timelines = application_request_body.pop("timelines")
+        timelines = request_body.pop("timelines")
 
         user = await get_user_by_sub(dbsession, testing_users[user_test_id][2])
         application = Application(
             user_id=user.id,
             archived=False,
-            **application_request_body,
+            **request_body,
         )
 
         # TODO not to use the methods
@@ -186,5 +191,7 @@ async def mock_application(  # noqa: C901, WPS231
                 **timeline_data,
             )
             await save_timeline(session=dbsession, timeline=timeline)
+
+        return application
 
     return _mock_application

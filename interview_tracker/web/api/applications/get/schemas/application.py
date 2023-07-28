@@ -24,6 +24,7 @@ class ApplicationBase(BaseModel):
     status_category: StatusCategoryEnum
     official_website: Optional[str]
     apply_icon: Optional[bool]
+    icon: Optional[str]
     job_description_link: Optional[str]
     salary: Optional[str]
     location: Optional[str]
