@@ -1,5 +1,5 @@
 import json
-from typing import Any, Awaitable, Callable, Dict
+from typing import Awaitable, Callable
 
 import pytest
 from fastapi import FastAPI, status
@@ -16,7 +16,6 @@ async def test_get_applications_okay(  # noqa: WPS218
     dbsession: AsyncSession,
     fastapi_app: FastAPI,
     mock_application: Callable[..., Awaitable[Application]],
-    application_request_body: Dict[str, Any],
 ) -> None:
     application = await mock_application(user_test_id="user_1")
     url = fastapi_app.url_path_for(
@@ -56,7 +55,6 @@ async def test_get_applications_no_access(
     dbsession: AsyncSession,
     fastapi_app: FastAPI,
     mock_application: Callable[..., Awaitable[Application]],
-    application_request_body: Dict[str, Any],
 ) -> None:
     application = await mock_application(user_test_id="user_1")
     url = fastapi_app.url_path_for(
@@ -77,7 +75,6 @@ async def test_get_applications_not_found(
     dbsession: AsyncSession,
     fastapi_app: FastAPI,
     mock_application: Callable[..., Awaitable[Application]],
-    application_request_body: Dict[str, Any],
 ) -> None:
     application = await mock_application(user_test_id="user_1")
     url = fastapi_app.url_path_for(

@@ -52,6 +52,15 @@ async def get_application_by_application_id(
     return result.unique().scalars().first()
 
 
+async def get_timeline_by_id(
+    timeline_id: int,
+    session: AsyncSession,
+) -> Optional[Timeline]:
+    query = select(Timeline).filter(Timeline.id == timeline_id)
+    result = await session.execute(query)
+    return result.unique().scalars().first()
+
+
 async def delete_application(
     application: Application,
     session: AsyncSession,
