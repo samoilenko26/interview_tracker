@@ -16,3 +16,8 @@ api_router.include_router(
     prefix="/applications",
     tags=["applications"],
 )
+api_router.include_router(
+    applications.delete,
+    prefix="/applications",
+    tags=["applications"],
+)

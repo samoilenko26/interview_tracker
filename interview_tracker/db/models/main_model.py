@@ -62,6 +62,7 @@ class Application(Base):
     timelines: Mapped[List["Timeline"]] = relationship(
         "Timeline",
         back_populates="application",
+        cascade="all, delete-orphan",
     )
 
 

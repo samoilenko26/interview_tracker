@@ -50,3 +50,13 @@ async def get_application_by_application_id(
     result = await session.execute(query)
 
     return result.unique().scalars().first()
+
+
+async def delete_application(
+    application: Application,
+    session: AsyncSession,
+) -> None:
+    for timeline in application.timelines:
+        await session.delete(timeline)
+    await session.delete(application)
+    await session.flush()
