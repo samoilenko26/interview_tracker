@@ -1,0 +1,1 @@
+"""PUT applications API"""

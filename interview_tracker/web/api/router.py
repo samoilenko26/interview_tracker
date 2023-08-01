@@ -21,3 +21,8 @@ api_router.include_router(
     prefix="/applications",
     tags=["applications"],
 )
+api_router.include_router(
+    applications.put,
+    prefix="/applications",
+    tags=["applications"],
+)

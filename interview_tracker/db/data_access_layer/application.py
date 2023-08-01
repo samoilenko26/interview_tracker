@@ -61,11 +61,19 @@ async def get_timeline_by_id(
     return result.unique().scalars().first()
 
 
-async def delete_application(
+async def delete_timelines(
     application: Application,
     session: AsyncSession,
 ) -> None:
     for timeline in application.timelines:
         await session.delete(timeline)
+    await session.flush()
+
+
+async def delete_application(
+    application: Application,
+    session: AsyncSession,
+) -> None:
+    await delete_timelines(application=application, session=session)
     await session.delete(application)
     await session.flush()
