@@ -77,6 +77,10 @@ ignore =
   D101,
   ; Missing docstring in public method
   D102,
+  ; Found too many `assert` statements
+  WPS218,
+  ; Found multiline loop
+  WPS352,
 
   ; Missing docstring in public function
   D103,

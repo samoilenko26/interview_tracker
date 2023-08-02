@@ -66,7 +66,7 @@ async def test_get_applications_no_access(
         url=url,
         headers=headers,
     )
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.anyio

@@ -13,8 +13,9 @@ async def save_application(
 ) -> Application:
     session.add(application)
     await session.flush()
-    await session.refresh(application)
-
+    # We do not need attribute_names=["timelines"] until we
+    # create application without timelines
+    await session.refresh(application)  # attribute_names=["timelines"]
     return application
 
 
@@ -25,7 +26,6 @@ async def save_timeline(
     session.add(timeline)
     await session.flush()
     await session.refresh(timeline)
-
     return timeline
 
 
@@ -48,7 +48,6 @@ async def get_application_by_application_id(
         .filter(Application.id == application_id)
     )
     result = await session.execute(query)
-
     return result.unique().scalars().first()
 
 
@@ -68,6 +67,7 @@ async def delete_timelines(
     for timeline in application.timelines:
         await session.delete(timeline)
     await session.flush()
+    await session.refresh(application, attribute_names=["timelines"])
 
 
 async def delete_application(

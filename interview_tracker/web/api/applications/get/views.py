@@ -71,7 +71,7 @@ async def get_application_by_id(
         )
     if row_application.user_id != user.id:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="No access to the application",
         )
 
